@@ -1,18 +1,25 @@
 use strict;
 package IO::Automatic;
-use Carp qw(croak);
-use IO::Scalar;
-use IO::File;
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub new {
-    my $self = shift;
-    my $dest = shift;
+    my $class = shift;
+    my $dest  = shift;
 
-    return IO::Scalar->new( $dest ) if ref $dest eq 'SCALAR';
+    if (ref $dest eq 'SCALAR') {
+        require IO::Scalar;
+        return IO::Scalar->new( $dest );
+    }
     return $dest if ref $dest eq 'GLOB';
-    croak "Don't know what to do with something of type ". ref $dest
-      if ref $dest;
+
+    $! = "Don't know what to do with something of type ". ref $dest;
+    return if ref $dest;
+
+    if ( $dest =~ /\.(?:gz|Z)$/ ) {
+        require IO::Zlib;
+        return IO::Zlib->new( $dest );
+    }
+    require IO::File;
     return IO::File->new( $dest );
 }
 
@@ -36,7 +43,8 @@ IO::Automatic - automatically choose a suitable IO::* module
 IO::Automatic provides a simple factory for creating new output
 handles.
 
-Several types of automatic conversion are supplied.
+Several types of automatic conversion are supplied.  If no conversion
+can be done, we return false.
 
 =head2 Scalar references
 
@@ -50,7 +58,7 @@ suitable for use as IO handles.
 =head2 Plain scalar
 
 A plain scalar is assumed to be a filename and so is transformed into
-an IO::File object.
+an IO::Zlib or IO::File object as appropriate.
 
 =head1 AUTHOR
 
@@ -58,14 +66,14 @@ Richard Clamp <richardc@unixbeard.net>
 
 =head1 COPYRIGHT
 
-Copyright (C) 2003 Richard Clamp.  All Rights Reserved.
+Copyright (C) 2003,2004 Richard Clamp.  All Rights Reserved.
 
 This module is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =head1 SEE ALSO
 
-IO::File, IO::Scalar
+L<IO::File>, L<IO::Scalar>, L<IO::Zlib>
 
 =cut
 
