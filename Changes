@@ -1,3 +1,6 @@
+0.03 Wednesday 19th January, 2005
+	Pass the mode through, if it's supplied (Jonathan Segal)
+
 0.02 Sunday 2th January, 2003
 	Add IO::Zlib use
 

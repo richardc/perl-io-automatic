@@ -1,14 +1,14 @@
 use strict;
 package IO::Automatic;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub new {
     my $class = shift;
-    my $dest  = shift;
+    my ($dest) = @_;  # preserve @_ but extract $dest to examine it
 
     if (ref $dest eq 'SCALAR') {
         require IO::Scalar;
-        return IO::Scalar->new( $dest );
+        return IO::Scalar->new( @_ );
     }
     return $dest if ref $dest eq 'GLOB';
 
@@ -17,10 +17,10 @@ sub new {
 
     if ( $dest =~ /\.(?:gz|Z)$/ ) {
         require IO::Zlib;
-        return IO::Zlib->new( $dest );
+        return IO::Zlib->new( @_ );
     }
     require IO::File;
-    return IO::File->new( $dest );
+    return IO::File->new( @_ );
 }
 
 1;
@@ -44,7 +44,9 @@ IO::Automatic provides a simple factory for creating new output
 handles.
 
 Several types of automatic conversion are supplied.  If no conversion
-can be done, we return false.
+can be done, we return false.  Only the first argument is examined to
+determine, but all the arguments will be passed through so you can
+also supply file mode specifications.
 
 =head2 Scalar references
 
@@ -66,7 +68,7 @@ Richard Clamp <richardc@unixbeard.net>
 
 =head1 COPYRIGHT
 
-Copyright (C) 2003,2004 Richard Clamp.  All Rights Reserved.
+Copyright (C) 2003, 2005 Richard Clamp.  All Rights Reserved.
 
 This module is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
