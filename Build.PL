@@ -7,8 +7,8 @@ Module::Build->new(
     requires    => {
         'Test::More'      => 0,
         'Module::Build'   => '0.18', # shabang line fixup
-        'IO::File' => 0,
-        'IO::String'      => 0,
+        'IO::File'        => 0,
+        'IO::Scalar'      => 0,
     },
     create_makefile_pl => 'passthrough',
    )
