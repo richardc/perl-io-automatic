@@ -1,5 +1,5 @@
 use strict;
-package Data::Sink;
+package IO::Automatic;
 use Carp qw(croak);
 use IO::Scalar;
 use IO::File;
