@@ -3,5 +3,6 @@ Makefile.PL
 META.yml
 Changes
 MANIFEST
+README
 t/auto.t
 lib/IO/Automatic.pm
